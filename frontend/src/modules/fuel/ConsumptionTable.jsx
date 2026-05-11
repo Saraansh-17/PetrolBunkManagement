@@ -1,0 +1,1 @@
+// Consumption table placeholder
