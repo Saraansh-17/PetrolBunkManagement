@@ -30,16 +30,8 @@ export class MongooseSaleRepository implements ISaleRepository {
     return doc ? this.toDomain(doc) : null;
   }
 
-  async findAll(page: number, size: number): Promise<{ content: Sale[], total: number }> {
-    const total = await SaleModel.countDocuments();
-    const docs = await SaleModel.find()
-      .skip(page * size)
-      .limit(size)
-      .sort({ timestamp: -1 });
-
-    return {
-      content: docs.map(doc => this.toDomain(doc)),
-      total
-    };
+  async findAll(): Promise<Sale[]> {
+    const docs = await SaleModel.find().sort({ timestamp: -1 });
+    return docs.map(doc => this.toDomain(doc));
   }
 }

@@ -25,3 +25,4 @@ const SaleSchema: Schema = new Schema({
 });
 
 export const SaleModel = mongoose.model<ISaleDocument>('Sale', SaleSchema);
+

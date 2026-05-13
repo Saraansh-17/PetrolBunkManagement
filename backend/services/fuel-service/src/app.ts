@@ -13,7 +13,7 @@ app.get("/health", (req, res) => {
     res.status(200).json({ status: "Fuel Service is UP" });
   });
 
-app.use("/api/v1/fuel/sales", saleRoutes);
+app.use("/api/v1/fuel", saleRoutes);
 app.use("/api/v1/fuel/purchase", purchaseRoutes);
 
 export default app;
