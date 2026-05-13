@@ -42,23 +42,16 @@ export class SaleController {
 
   async listSales(req: Request, res: Response) {
     try {
-      const page = parseInt(req.query.page as string) || 0;
-      const size = parseInt(req.query.size as string) || 10;
+      const sales = await this.listSalesUseCase.execute();
 
-      const result = await this.listSalesUseCase.execute(page, size);
-
-      const content = result.content.map(sale => ({
+      const content = sales.map(sale => ({
         saleId: sale.id,
         pumpId: sale.pumpId,
         fuelType: sale.fuelType,
         litersSold: sale.litersSold
       }));
 
-      return res.status(200).json({
-        content,
-        page,
-        size
-      });
+      return res.status(200).json(content);
     } catch (error: any) {
       return res.status(500).json({
         status: 500,
