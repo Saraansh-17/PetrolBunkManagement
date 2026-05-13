@@ -80,7 +80,7 @@ const PurchaseForm = ({ fetchPurchases }) => {
             </label>
             <select
               name="fuelType"
-              className="w-full px-4 py-2.5 rounded-lg border border-gray-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-100 transition-all outline-none text-sm appearance-none bg-no-repeat bg-[right_1rem_center] bg-[length:1em_1em]"
+              className="w-full px-4 py-2.5 rounded-lg border border-gray-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-100 transition-all outline-none text-sm appearance-none bg-no-repeat bg-position-[right_1rem_center] bg-size-[1em_1em]"
               style={{ backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='currentColor'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E")` }}
               value={formData.fuelType}
               onChange={handleChange}
