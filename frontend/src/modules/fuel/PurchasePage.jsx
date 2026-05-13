@@ -1,1 +1,0 @@
-// Purchase page placeholder

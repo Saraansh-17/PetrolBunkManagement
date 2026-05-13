@@ -249,6 +249,7 @@ Fetch all fuel purchase records.
     {
       "purchaseId": 101,
       "vendorName": "Indian Oil"
+
     }
   ]
 }
