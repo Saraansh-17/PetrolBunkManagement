@@ -48,7 +48,13 @@ export class SaleController {
         saleId: sale.id,
         pumpId: sale.pumpId,
         fuelType: sale.fuelType,
-        litersSold: sale.litersSold
+        litersSold: sale.litersSold,
+        totalAmount: sale.totalAmount,
+        paymentMode: sale.paymentMode,
+        timestamp: sale.timestamp,
+        employeeId:sale.employeeId,
+        pricePerLiter:sale.pricePerLiter,
+        
       }));
 
       return res.status(200).json(content);
