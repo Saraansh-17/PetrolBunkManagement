@@ -22,6 +22,12 @@ public class GlobalExceptionHandler {
 
     private static final Logger log = LoggerFactory.getLogger(GlobalExceptionHandler.class);
 
+    @ExceptionHandler(ForbiddenException.class)
+    public ResponseEntity<ApiResponse<Void>> handleForbidden(ForbiddenException ex) {
+        ApiResponse<Void> body = ApiResponse.of(HttpStatus.FORBIDDEN.value(), ex.getMessage(), null);
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(body);
+    }
+
     @ExceptionHandler(ResourceNotFoundException.class)
     public ResponseEntity<ApiResponse<Void>> handleNotFound(ResourceNotFoundException ex) {
         ApiResponse<Void> body = ApiResponse.of(HttpStatus.NOT_FOUND.value(), ex.getMessage(), null);

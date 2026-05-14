@@ -9,13 +9,41 @@ gateway:
     fuel: http://localhost:3001
     inventory: http://localhost:3002
     hr: http://localhost:3003
+    auth: http://localhost:8082
+  security:
+    # Must match HR service `gateway.trust.token` so only the gateway can inject user headers.
+    internal-token: ${GATEWAY_INTERNAL_TOKEN:}
+  rate-limit:
+    enabled: ${GATEWAY_RATE_LIMIT_ENABLED:true}
+    requests-per-minute: 100
+
+jwt:
+  secret: ${JWT_SECRET:change-me-use-at-least-32-bytes-secret-key-for-hs256!!}
+  issuer: ${JWT_ISSUER:petrol-pump-auth}
 
 spring:
   application:
     name: petrol-pump-api-gateway
+  data:
+    redis:
+      host: ${SPRING_DATA_REDIS_HOST:localhost}
+      port: ${SPRING_DATA_REDIS_PORT:6379}
+      password: ${SPRING_DATA_REDIS_PASSWORD:}
   cloud:
     gateway:
       routes:
+        - id: auth-service
+          uri: ${gateway.downstream.auth}
+          predicates:
+            - Path=/auth/**
+        - id: hr-employees
+          uri: ${gateway.downstream.hr}
+          predicates:
+            - Path=/employees/**
+        - id: hr-attendance
+          uri: ${gateway.downstream.hr}
+          predicates:
+            - Path=/attendance/**
         - id: fuel-service
           uri: ${gateway.downstream.fuel}
           predicates:
@@ -24,10 +52,6 @@ spring:
           uri: ${gateway.downstream.inventory}
           predicates:
             - Path=/inventory/**
-        - id: hr-service
-          uri: ${gateway.downstream.hr}
-          predicates:
-            - Path=/hr/**
       globalcors:
         add-to-simple-url-handler-mapping: true
         cors-configurations:

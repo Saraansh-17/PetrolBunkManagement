@@ -46,6 +46,14 @@ public class EmployeeRepositoryAdapter implements EmployeeRepository {
     }
 
     @Override
+    public Optional<Employee> findByEmailIgnoreCase(String email) {
+        if (email == null || email.isBlank()) {
+            return Optional.empty();
+        }
+        return employeeJpaRepository.findByEmailIgnoreCase(email.trim()).map(employeeEntityMapper::toDomain);
+    }
+
+    @Override
     public List<Employee> findAllActive() {
         return employeeJpaRepository.findByActiveTrue().stream()
                 .map(employeeEntityMapper::toDomain)
