@@ -5,6 +5,6 @@ export const purchaseSchema = z.object({
     quantity : z.number().positive("Quantity must be greater then 0"),
     pricePerLiter : z.number().positive("Price per liter must be greater than 0"),
     totalCost : z.number().positive("total cost must be greater than 0"),
+
     
- 
 })

@@ -7,8 +7,8 @@ export const ENDPOINTS = {
     GET_SALE_BY_ID: (id) => `/fuel/sales/${id}`,
 
     // Fuel Purchases
-    RECORD_PURCHASE: "/fuel/purchase",
-    GET_ALL_PURCHASES: "/fuel/purchases",
+    RECORD_PURCHASE: "/fuel/purchase/create",
+    GET_ALL_PURCHASES: "/fuel/purchase/purchases",
     GET_PURCHASE_BY_ID: (id) => `/fuel/purchases/${id}`,
   },
 

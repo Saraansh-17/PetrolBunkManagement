@@ -37,7 +37,7 @@ const PurchaseTable = ({ purchases = [] }) => {
                 onClick={() => setSelectedPurchase(purchase)}
               >
                 <td className="px-6 py-4 whitespace-nowrap text-[13px] font-medium text-gray-600">
-                  {purchase.purchaseDate ? new Date(purchase.purchaseDate).toLocaleDateString('en-IN', {
+                  {purchase.timestamp ? new Date(purchase.timestamp).toLocaleDateString('en-IN', {
                     day: '2-digit',
                     month: 'short',
                     year: 'numeric'
@@ -79,7 +79,7 @@ const PurchaseTable = ({ purchases = [] }) => {
               <div className="flex justify-between items-start">
                 <div>
                   <h3 className="text-xl font-bold text-gray-900">Purchase Details</h3>
-                  <p className="text-sm text-gray-500 font-mono mt-1 text-[11px]">ID: #{selectedPurchase.purchaseId}</p>
+                  
                 </div>
                 <button 
                   onClick={() => setSelectedPurchase(null)}
@@ -98,7 +98,7 @@ const PurchaseTable = ({ purchases = [] }) => {
                 <div className="space-y-1">
                   <p className="text-[11px] font-bold text-gray-400 uppercase tracking-widest">Date</p>
                   <p className="text-sm font-semibold text-gray-800">
-                    {selectedPurchase.purchaseDate ? new Date(selectedPurchase.purchaseDate).toLocaleDateString('en-IN', {
+                    {selectedPurchase.timestamp ? new Date(selectedPurchase.timestamp).toLocaleDateString('en-IN', {
                       day: '2-digit', month: 'short', year: 'numeric'
                     }) : 'N/A'}
                   </p>
@@ -132,7 +132,7 @@ const PurchaseTable = ({ purchases = [] }) => {
                 </div>
                 <div className="flex justify-between items-center text-sm">
                   <span className="font-medium text-gray-600">Price / Liter</span>
-                  <span className="font-mono text-gray-700">₹{parseFloat(selectedPurchase.pricePerLiter || 0).toFixed(2)}</span>
+                  <span className="font-mono text-gray-700">₹{parseFloat((selectedPurchase.totalCost)/(selectedPurchase.quantity) || 0).toFixed(2)}</span>
                 </div>
                 <div className="pt-3 border-t border-gray-200 flex justify-between items-center">
                   <span className="font-bold text-gray-800">Total Cost</span>

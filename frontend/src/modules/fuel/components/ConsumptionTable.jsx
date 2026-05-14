@@ -79,7 +79,6 @@ const ConsumptionTable = ({ sales = [] }) => {
               <div className="flex justify-between items-start">
                 <div>
                   <h3 className="text-xl font-bold text-gray-900">Consumption Details</h3>
-                  <p className="text-sm text-gray-500 font-mono mt-1 text-[11px]">ID: #{selectedSale.id || selectedSale.saleId}</p>
                 </div>
                 <button 
                   onClick={() => setSelectedSale(null)}
@@ -98,7 +97,7 @@ const ConsumptionTable = ({ sales = [] }) => {
                 <div className="space-y-1">
                   <p className="text-[11px] font-bold text-gray-400 uppercase tracking-widest">Date</p>
                   <p className="text-sm font-semibold text-gray-800">
-                    {selectedSale.timestamp || selectedSale.saleDate ? new Date(selectedSale.timestamp || selectedSale.saleDate).toLocaleDateString('en-IN', {
+                    {selectedSale.timestamp ? new Date(selectedSale.timestamp).toLocaleDateString('en-IN', {
                       day: '2-digit', month: 'short', year: 'numeric'
                     }) : 'N/A'}
                   </p>

@@ -5,8 +5,8 @@ const PurchaseForm = ({ fetchPurchases }) => {
   const [formData, setFormData] = useState({
     vendorName: "",
     fuelType: "",
-    quantity: "",
-    pricePerLiter: "",
+    quantity: 0,
+    pricePerLiter: 0,
   });
 
   const [loading, setLoading] = useState(false);
@@ -32,7 +32,10 @@ const PurchaseForm = ({ fetchPurchases }) => {
       const payload = {
         ...formData,
         totalCost: Number(totalCost),
+        quantity: Number(formData.quantity),
+        pricePerLiter: Number(formData.pricePerLiter),
       };
+      console.log(payload);
       await recordFuelPurchase(payload);
       await fetchPurchases();
       setFormData({
@@ -42,7 +45,7 @@ const PurchaseForm = ({ fetchPurchases }) => {
         pricePerLiter: "",
       });
     } catch (error) {
-      console.error("Failed to add purchase:", error);
+      console.error("Failed to add purchase:", error.message);
     } finally {
       setLoading(false);
     }

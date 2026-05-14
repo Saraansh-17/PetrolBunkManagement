@@ -37,6 +37,7 @@ const ConsumptionForm = ({ fetchSales }) => {
         pricePerLiter: Number(formData.pricePerLiter),
         totalAmount: Number(totalAmount),
       };
+      console.log(payload);
       await recordFuelSale(payload);
       if (fetchSales) {
         await fetchSales();

@@ -13,6 +13,7 @@ const ConsumeFuel = () => {
     try {
       setLoading(true);
       const data = await getAllFuelSales();
+      console.log(data);
       setSales(data.content || data || []);
     } catch (error) {
       console.error("Error fetching sales:", error);
