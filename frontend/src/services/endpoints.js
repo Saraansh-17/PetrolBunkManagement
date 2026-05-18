@@ -1,5 +1,10 @@
 
 export const ENDPOINTS = {
+  AUTH: {
+    LOGIN: "/auth/login",
+    LOGOUT: "/auth/logout",
+    GET_ME: "/auth/me",
+  },
   FUEL: {
     // Fuel Consume
     RECORD_SALE: "/fuel/sale",

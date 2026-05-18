@@ -1,7 +1,10 @@
 import { useState } from "react";
 import { recordFuelPurchase } from "../services/fuelService";
+import { useAuth } from "../../Auth/context/useAuth";
 
 const PurchaseForm = ({ fetchPurchases }) => {
+  const { user } = useAuth();
+
   const [formData, setFormData] = useState({
     vendorName: "",
     fuelType: "",
@@ -31,6 +34,7 @@ const PurchaseForm = ({ fetchPurchases }) => {
       setLoading(true);
       const payload = {
         ...formData,
+        employeeId: user?.employeeId,
         totalCost: Number(totalCost),
         quantity: Number(formData.quantity),
         pricePerLiter: Number(formData.pricePerLiter),

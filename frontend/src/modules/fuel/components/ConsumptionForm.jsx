@@ -1,10 +1,12 @@
 import { useState } from "react";
 import { recordFuelSale } from "../services/fuelService";
+import { useAuth } from "../../Auth/context/useAuth";
 
 const ConsumptionForm = ({ fetchSales }) => {
+  const { user } = useAuth();
+
   const [formData, setFormData] = useState({
     pumpId: "",
-    employeeId: "",
     fuelType: "",
     litersSold: "",
     pricePerLiter: "",
@@ -33,6 +35,7 @@ const ConsumptionForm = ({ fetchSales }) => {
       setLoading(true);
       const payload = {
         ...formData,
+        employeeId: user?.employeeId,
         litersSold: Number(formData.litersSold),
         pricePerLiter: Number(formData.pricePerLiter),
         totalAmount: Number(totalAmount),
@@ -44,7 +47,6 @@ const ConsumptionForm = ({ fetchSales }) => {
       }
       setFormData({
         pumpId: "",
-        employeeId: "",
         fuelType: "",
         litersSold: "",
         pricePerLiter: "",
@@ -83,21 +85,7 @@ const ConsumptionForm = ({ fetchSales }) => {
             />
           </div>
 
-          {/* Employee ID */}
-          <div className="md:col-span-2 space-y-1.5">
-            <label className="text-[13px] font-bold text-gray-600 uppercase tracking-wider ml-1">
-              Employee ID
-            </label>
-            <input
-              type="text"
-              name="employeeId"
-              placeholder="e.g. EMP001"
-              className="w-full px-4 py-2.5 rounded-lg border border-gray-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-100 transition-all outline-none text-sm"
-              value={formData.employeeId}
-              onChange={handleChange}
-              required
-            />
-          </div>
+
 
           {/* Fuel Type */}
           <div className="space-y-1.5">
