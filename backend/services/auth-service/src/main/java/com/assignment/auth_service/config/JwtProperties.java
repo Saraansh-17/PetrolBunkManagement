@@ -6,7 +6,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
  * Externalized JWT settings; secrets must come from environment in production.
  */
 @ConfigurationProperties(prefix = "jwt")
-public class JwtProperties {
+public class  JwtProperties {
 
     /**
      * HMAC key for signing access tokens (HS256). Use a long random value via {@code JWT_SECRET}.

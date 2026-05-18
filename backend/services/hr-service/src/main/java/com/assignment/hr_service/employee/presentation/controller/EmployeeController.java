@@ -22,7 +22,7 @@ import java.util.List;
  * Presentation adapter: HTTP mapping and validation trigger only. Business rules live in {@link EmployeeService}.
  */
 @RestController
-@RequestMapping("/employees")
+@RequestMapping("/hr/employees")
 public class EmployeeController {
 
     private final EmployeeService employeeService;

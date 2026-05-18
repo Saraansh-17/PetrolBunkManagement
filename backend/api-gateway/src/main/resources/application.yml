@@ -3,7 +3,6 @@ server:
   error:
     include-message: always
 
-# Downstream base URLs (override per environment)
 gateway:
   downstream:
     fuel: http://localhost:3001
@@ -11,14 +10,17 @@ gateway:
     hr: http://localhost:3003
     auth: http://localhost:8082
   security:
-    # Must match HR service `gateway.trust.token` so only the gateway can inject user headers.
-    internal-token: ${GATEWAY_INTERNAL_TOKEN:}
+    internal-token: ${GATEWAY_INTERNAL_TOKEN:dev-gateway-internal-token-change-in-production}
+  cookie:
+    access-token-name: access_token
   rate-limit:
     enabled: ${GATEWAY_RATE_LIMIT_ENABLED:true}
     requests-per-minute: 100
+  cors:
+    allowed-origins: ${GATEWAY_CORS_ORIGINS:http://localhost:5173,http://localhost:3000}
 
 jwt:
-  secret: ${JWT_SECRET:change-me-use-at-least-32-bytes-secret-key-for-hs256!!}
+  secret: ${JWT_SECRET:dev-jwt-secret-must-be-at-least-32-bytes-long!!}
   issuer: ${JWT_ISSUER:petrol-pump-auth}
 
 spring:
@@ -39,7 +41,7 @@ spring:
         - id: hr-employees
           uri: ${gateway.downstream.hr}
           predicates:
-            - Path=/employees/**
+            - Path=/hr/employees/**
         - id: hr-attendance
           uri: ${gateway.downstream.hr}
           predicates:
@@ -56,8 +58,7 @@ spring:
         add-to-simple-url-handler-mapping: true
         cors-configurations:
           '[/**]':
-            allowed-origin-patterns:
-              - "*"
+            allowed-origin-patterns: ${gateway.cors.allowed-origins}
             allowed-methods:
               - GET
               - POST
@@ -66,19 +67,17 @@ spring:
               - DELETE
               - OPTIONS
             allowed-headers: "*"
+            allow-credentials: true
             max-age: 3600
 
 management:
   endpoints:
     web:
       exposure:
-        include: health,info,gateway
+        include: health,info
   endpoint:
     health:
       show-details: when_authorized
-  health:
-    defaults:
-      enabled: true
 
 logging:
   level:

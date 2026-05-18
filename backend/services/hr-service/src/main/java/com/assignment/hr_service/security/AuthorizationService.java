@@ -6,9 +6,6 @@ import com.assignment.hr_service.employee.domain.repository.EmployeeRepository;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.stereotype.Service;
 
-/**
- * Authorization helpers driven by gateway-forwarded identity and HR employee records (email linkage).
- */
 @Service
 public class AuthorizationService {
 
@@ -36,9 +33,10 @@ public class AuthorizationService {
 
     public long resolveEmployeeProfileIdForCurrentUser() {
         GatewayAuthUser user = currentUser();
-        return employeeRepository.findByEmailIgnoreCase(user.getEmail())
+        return employeeRepository.findByEmployeeCodeIgnoreCase(user.getEmployeeId())
                 .map(Employee::getId)
-                .orElseThrow(() -> new ForbiddenException("No employee profile linked to this user email"));
+                .orElseThrow(() -> new ForbiddenException(
+                        "No HR profile linked to employee id: " + user.getEmployeeId()));
     }
 
     public void assertCanManageEmployees() {

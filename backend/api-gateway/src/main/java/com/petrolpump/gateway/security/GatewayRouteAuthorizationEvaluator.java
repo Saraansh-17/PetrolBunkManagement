@@ -1,28 +1,46 @@
 package com.petrolpump.gateway.security;
 
+import com.petrolpump.gateway.util.GatewayPathUtils;
 import org.springframework.http.HttpMethod;
 import org.springframework.stereotype.Component;
 
 /**
- * Coarse-grained role checks at the edge. Fine-grained rules remain in domain services (HR).
+ * Coarse-grained role checks at the edge. Paths must be normalized before calling.
  */
 @Component
 public class GatewayRouteAuthorizationEvaluator {
 
-    public void assertEmployeeMutationsAllowed(HttpMethod method, String path, String role) {
-        if (!path.startsWith("/employees")) {
+    public void authorize(HttpMethod method, String rawPath, String role) {
+        String path = GatewayPathUtils.normalize(rawPath);
+        assertAuthEmployeeRoutes(method, path, role);
+        assertHrEmployeeRoutes(method, path, role);
+        assertAttendanceRoutes(method, path, role);
+    }
+
+    private void assertAuthEmployeeRoutes(HttpMethod method, String path, String role) {
+        if (!path.startsWith("/auth/employees")) {
+            return;
+        }
+        requireAdmin(role, "Auth employee management requires ADMIN");
+    }
+
+    private void assertHrEmployeeRoutes(HttpMethod method, String path, String role) {
+        if (!path.startsWith("/hr/employees")) {
+            return;
+        }
+        if (path.startsWith("/hr/internal")) {
             return;
         }
         if (method == HttpMethod.POST || method == HttpMethod.PUT
                 || method == HttpMethod.PATCH || method == HttpMethod.DELETE) {
-            requireAdmin(role, "Employee mutations require ADMIN");
+            requireAdmin(role, "HR employee mutations require ADMIN");
         }
-        if (method == HttpMethod.GET && "/employees".equals(path)) {
-            requireAdmin(role, "Listing employees requires ADMIN");
+        if (method == HttpMethod.GET && "/hr/employees".equals(path)) {
+            requireAdmin(role, "Listing HR employees requires ADMIN");
         }
     }
 
-    public void assertAttendanceGatewayRules(HttpMethod method, String path, String role) {
+    private void assertAttendanceRoutes(HttpMethod method, String path, String role) {
         if (!path.startsWith("/attendance")) {
             return;
         }

@@ -14,7 +14,7 @@ import org.springframework.web.filter.OncePerRequestFilter;
 import java.io.IOException;
 
 /**
- * Rejects direct service access when gateway trust is enabled and the internal token is missing or invalid.
+ * Rejects proxied API calls without the shared gateway internal token.
  */
 @Component
 @Order(1)
@@ -32,7 +32,8 @@ public class GatewayTrustFilter extends OncePerRequestFilter {
             return true;
         }
         String uri = request.getRequestURI();
-        return !uri.startsWith("/employees") && !uri.startsWith("/attendance");
+        return !uri.startsWith("/hr/employees")
+                && !uri.startsWith("/attendance");
     }
 
     @Override

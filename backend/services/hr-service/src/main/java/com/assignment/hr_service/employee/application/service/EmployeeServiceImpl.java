@@ -38,6 +38,15 @@ public class EmployeeServiceImpl implements EmployeeService {
     @Override
     public EmployeeResponseDto create(EmployeeRequestDto request) {
         authorizationService.assertCanManageEmployees();
+        return persistNewEmployee(request);
+    }
+
+    @Override
+    public EmployeeResponseDto provisionFromAuth(EmployeeRequestDto request) {
+        return persistNewEmployee(request);
+    }
+
+    private EmployeeResponseDto persistNewEmployee(EmployeeRequestDto request) {
         if (employeeRepository.existsByEmployeeCode(request.getEmployeeCode().trim())) {
             throw new DuplicateResourceException("Employee code already exists: " + request.getEmployeeCode());
         }

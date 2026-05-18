@@ -12,9 +12,6 @@ import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
 
-/**
- * Binds gateway-forwarded identity headers to the request for downstream authorization services.
- */
 @Component
 @Order(2)
 public class GatewayIdentityFilter extends OncePerRequestFilter {
@@ -22,7 +19,10 @@ public class GatewayIdentityFilter extends OncePerRequestFilter {
     @Override
     protected boolean shouldNotFilter(@NonNull HttpServletRequest request) {
         String uri = request.getRequestURI();
-        return !uri.startsWith("/employees") && !uri.startsWith("/attendance");
+        if (uri.startsWith("/hr/internal")) {
+            return true;
+        }
+        return !uri.startsWith("/hr/employees") && !uri.startsWith("/attendance");
     }
 
     @Override
@@ -32,14 +32,21 @@ public class GatewayIdentityFilter extends OncePerRequestFilter {
             @NonNull FilterChain filterChain) throws ServletException, IOException {
         String userIdHeader = request.getHeader(GatewayAuthConstants.HEADER_USER_ID);
         String roleHeader = request.getHeader(GatewayAuthConstants.HEADER_USER_ROLE);
-        if (userIdHeader == null || userIdHeader.isBlank() || roleHeader == null || roleHeader.isBlank()) {
+        String employeeIdHeader = request.getHeader(GatewayAuthConstants.HEADER_EMPLOYEE_ID);
+        if (userIdHeader == null || userIdHeader.isBlank()
+                || roleHeader == null || roleHeader.isBlank()
+                || employeeIdHeader == null || employeeIdHeader.isBlank()) {
             response.sendError(HttpStatus.UNAUTHORIZED.value(), "Missing gateway identity headers");
             return;
         }
         try {
             Long userId = Long.parseLong(userIdHeader.trim());
             String email = request.getHeader(GatewayAuthConstants.HEADER_USER_EMAIL);
-            GatewayAuthUser user = new GatewayAuthUser(userId, email != null ? email : "", roleHeader.trim());
+            GatewayAuthUser user = new GatewayAuthUser(
+                    userId,
+                    employeeIdHeader.trim(),
+                    email != null ? email : "",
+                    roleHeader.trim());
             request.setAttribute(GatewayAuthConstants.REQUEST_ATTR_GATEWAY_USER, user);
             filterChain.doFilter(request, response);
         } catch (NumberFormatException ex) {

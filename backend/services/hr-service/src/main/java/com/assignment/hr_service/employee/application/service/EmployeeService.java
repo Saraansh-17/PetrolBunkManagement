@@ -12,6 +12,11 @@ public interface EmployeeService {
 
     EmployeeResponseDto create(EmployeeRequestDto request);
 
+    /**
+     * Called by auth-service during onboarding; skips user authorization (internal token only).
+     */
+    EmployeeResponseDto provisionFromAuth(EmployeeRequestDto request);
+
     List<EmployeeResponseDto> findAllActive();
 
     EmployeeResponseDto findById(Long id);

@@ -54,6 +54,15 @@ public class EmployeeRepositoryAdapter implements EmployeeRepository {
     }
 
     @Override
+    public Optional<Employee> findByEmployeeCodeIgnoreCase(String employeeCode) {
+        if (employeeCode == null || employeeCode.isBlank()) {
+            return Optional.empty();
+        }
+        return employeeJpaRepository.findByEmployeeCodeIgnoreCase(employeeCode.trim())
+                .map(employeeEntityMapper::toDomain);
+    }
+
+    @Override
     public List<Employee> findAllActive() {
         return employeeJpaRepository.findByActiveTrue().stream()
                 .map(employeeEntityMapper::toDomain)

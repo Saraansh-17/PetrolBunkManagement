@@ -1,21 +1,17 @@
 package com.assignment.auth_service.auth.application;
 
-import com.assignment.auth_service.auth.application.dto.LoginRequestDto;
-import com.assignment.auth_service.auth.application.dto.LogoutRequestDto;
-import com.assignment.auth_service.auth.application.dto.RefreshTokenRequestDto;
-import com.assignment.auth_service.auth.application.dto.RegisterRequestDto;
-import com.assignment.auth_service.auth.application.dto.TokenResponseDto;
+import com.assignment.auth_service.auth.application.dto.AuthResponse;
+import com.assignment.auth_service.auth.application.dto.LoginRequest;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
-/**
- * Authentication use cases: register, login, refresh, logout.
- */
 public interface AuthService {
 
-    void register(RegisterRequestDto request);
+    AuthResponse login(LoginRequest request, HttpServletResponse response);
 
-    TokenResponseDto login(LoginRequestDto request);
+    AuthResponse getCurrentUser();
 
-    TokenResponseDto refresh(RefreshTokenRequestDto request);
+    void logout(HttpServletRequest request, HttpServletResponse response);
 
-    void logout(LogoutRequestDto request);
+    AuthResponse refresh(HttpServletRequest request, HttpServletResponse response);
 }

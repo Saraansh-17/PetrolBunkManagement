@@ -14,3 +14,21 @@ spring:
 jwt:
   secret: test-secret-key-at-least-32-bytes-long-for-jwt-hs256
   issuer: test-issuer
+
+auth:
+  cookie:
+    secure: false
+  admin:
+    bootstrap:
+      enabled: true
+      email: admin@gmail.com
+      password: admin123
+
+integration:
+  hr:
+    base-url: http://localhost:3003
+    internal-token: test-internal-token
+
+gateway:
+  trust:
+    enabled: false

@@ -1,10 +1,15 @@
 package com.assignment.auth_service.jwt;
 
+import com.assignment.auth_service.common.exception.ExpiredTokenException;
+import com.assignment.auth_service.common.exception.InvalidTokenException;
 import com.assignment.auth_service.config.JwtProperties;
 import com.assignment.auth_service.user.domain.Role;
+import com.assignment.auth_service.user.infrastructure.entity.UserEntity;
 import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
+import io.jsonwebtoken.security.SignatureException;
 import org.springframework.stereotype.Service;
 
 import javax.crypto.SecretKey;
@@ -14,15 +19,14 @@ import java.time.temporal.ChronoUnit;
 import java.util.Date;
 
 /**
- * Issues and parses access JWTs. Claims: userId, email, role (plus subject = userId).
- * Refresh tokens are opaque DB-backed values managed elsewhere.
+ * Issues and validates access JWTs. Subject ({@code sub}) is the business employeeId; role and email are claims.
  */
 @Service
 public class JwtService {
 
-    public static final String CLAIM_USER_ID = "userId";
-    public static final String CLAIM_EMAIL = "email";
     public static final String CLAIM_ROLE = "role";
+    public static final String CLAIM_EMAIL = "email";
+    public static final String CLAIM_USER_ID = "userId";
 
     private final JwtProperties jwtProperties;
 
@@ -30,31 +34,36 @@ public class JwtService {
         this.jwtProperties = jwtProperties;
     }
 
-    public String createAccessToken(Long userId, String email, Role role) {
+    public String createAccessToken(UserEntity user) {
         Instant now = Instant.now();
         Instant exp = now.plus(jwtProperties.getAccessTokenMinutes(), ChronoUnit.MINUTES);
         return Jwts.builder()
                 .issuer(jwtProperties.getIssuer())
-                .subject(String.valueOf(userId))
+                .subject(user.getEmployeeId())
                 .issuedAt(Date.from(now))
                 .expiration(Date.from(exp))
-                .claim(CLAIM_USER_ID, userId)
-                .claim(CLAIM_EMAIL, email)
-                .claim(CLAIM_ROLE, role.name())
+                .claim(CLAIM_ROLE, user.getRole().name())
+                .claim(CLAIM_EMAIL, user.getEmail())
+                .claim(CLAIM_USER_ID, user.getId())
                 .signWith(signingKey())
                 .compact();
     }
 
-    /**
-     * Validates signature, issuer, and expiration — used by auth-service for token inspection flows.
-     */
     public Claims parseAndValidate(String token) {
-        return Jwts.parser()
-                .verifyWith(signingKey())
-                .requireIssuer(jwtProperties.getIssuer())
-                .build()
-                .parseSignedClaims(token)
-                .getPayload();
+        try {
+            return Jwts.parser()
+                    .verifyWith(signingKey())
+                    .requireIssuer(jwtProperties.getIssuer())
+                    .build()
+                    .parseSignedClaims(token)
+                    .getPayload();
+        } catch (ExpiredJwtException ex) {
+            throw new ExpiredTokenException("Access token expired", ex);
+        } catch (SignatureException | IllegalArgumentException ex) {
+            throw new InvalidTokenException("Invalid access token", ex);
+        } catch (Exception ex) {
+            throw new InvalidTokenException("Unable to parse access token", ex);
+        }
     }
 
     public int accessTokenExpiresInSeconds() {

@@ -4,20 +4,17 @@ import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 
-/**
- * Registration creates an EMPLOYEE account. ADMIN users are provisioned via controlled processes (DB/ops).
- */
-public class RegisterRequestDto {
+public class LoginRequest {
 
     @NotBlank
     @Email
     private String email;
 
     @NotBlank
-    @Size(min = 8, max = 128)
+    @Size(max = 128)
     private String password;
 
-    public RegisterRequestDto() {
+    public LoginRequest() {
     }
 
     public String getEmail() {

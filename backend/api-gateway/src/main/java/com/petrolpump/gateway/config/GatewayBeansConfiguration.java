@@ -9,7 +9,8 @@ import org.springframework.util.AntPathMatcher;
 @EnableConfigurationProperties({
         JwtProperties.class,
         GatewaySecurityProperties.class,
-        GatewayRateLimitProperties.class
+        GatewayRateLimitProperties.class,
+        GatewayCookieProperties.class
 })
 public class GatewayBeansConfiguration {
 
