@@ -9,10 +9,44 @@ gateway:
     fuel: http://localhost:3001
     inventory: http://localhost:3002
     hr: http://localhost:3003
+    auth: http://localhost:8082
+  security:
+    internal-token: ${GATEWAY_INTERNAL_TOKEN:dev-gateway-internal-token-change-in-production}
+  cookie:
+    access-token-name: access_token
+  rate-limit:
+    enabled: ${GATEWAY_RATE_LIMIT_ENABLED:true}
+    requests-per-minute: 100
+  cors:
+    allowed-origins: ${GATEWAY_CORS_ORIGINS:http://localhost:5173,http://localhost:3000}
+
+jwt:
+  secret: ${JWT_SECRET:dev-jwt-secret-must-be-at-least-32-bytes-long!!}
+  issuer: ${JWT_ISSUER:petrol-pump-auth}
 
 spring:
   application:
     name: petrol-pump-api-gateway
+  data:
+    redis:
+      host: ${SPRING_DATA_REDIS_HOST:localhost}
+      port: ${SPRING_DATA_REDIS_PORT:6379}
+      password: ${SPRING_DATA_REDIS_PASSWORD:}
+  cloud:
+    gateway:
+      routes:
+        - id: auth-service
+          uri: ${gateway.downstream.auth}
+          predicates:
+            - Path=/auth/**
+        - id: hr-employees
+          uri: ${gateway.downstream.hr}
+          predicates:
+            - Path=/hr/employees/**
+        - id: hr-attendance
+          uri: ${gateway.downstream.hr}
+          predicates:
+            - Path=/attendance/**
   cloud:
     gateway:
       routes:
@@ -32,6 +66,7 @@ spring:
         add-to-simple-url-handler-mapping: true
         cors-configurations:
           '[/**]':
+            allowed-origin-patterns: ${gateway.cors.allowed-origins}
             allowed-origin-patterns:
               - "*"
             allowed-methods:
@@ -42,12 +77,17 @@ spring:
               - DELETE
               - OPTIONS
             allowed-headers: "*"
+            allow-credentials: true
             max-age: 3600
 
 management:
   endpoints:
     web:
       exposure:
+        include: health,info
+  endpoint:
+    health:
+      show-details: when_authorized
         include: health,info,gateway
   endpoint:
     health:

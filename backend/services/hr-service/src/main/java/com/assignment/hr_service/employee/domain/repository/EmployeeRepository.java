@@ -10,6 +10,10 @@ import java.util.Optional;
  */
 public interface EmployeeRepository {
 
+    Optional<Employee> findByEmailIgnoreCase(String email);
+
+    Optional<Employee> findByEmployeeCodeIgnoreCase(String employeeCode);
+
     Employee save(Employee employee);
 
     Optional<Employee> findById(Long id);

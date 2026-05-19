@@ -7,6 +7,7 @@ import com.assignment.hr_service.employee.application.dto.EmployeeResponseDto;
 import com.assignment.hr_service.employee.application.mapper.EmployeeDtoMapper;
 import com.assignment.hr_service.employee.domain.model.Employee;
 import com.assignment.hr_service.employee.domain.repository.EmployeeRepository;
+import com.assignment.hr_service.security.AuthorizationService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -23,6 +24,15 @@ public class EmployeeServiceImpl implements EmployeeService {
 
     private final EmployeeRepository employeeRepository;
     private final EmployeeDtoMapper employeeDtoMapper;
+    private final AuthorizationService authorizationService;
+
+    public EmployeeServiceImpl(
+            EmployeeRepository employeeRepository,
+            EmployeeDtoMapper employeeDtoMapper,
+            AuthorizationService authorizationService) {
+        this.employeeRepository = employeeRepository;
+        this.employeeDtoMapper = employeeDtoMapper;
+        this.authorizationService = authorizationService;
 
     public EmployeeServiceImpl(EmployeeRepository employeeRepository, EmployeeDtoMapper employeeDtoMapper) {
         this.employeeRepository = employeeRepository;
@@ -31,6 +41,16 @@ public class EmployeeServiceImpl implements EmployeeService {
 
     @Override
     public EmployeeResponseDto create(EmployeeRequestDto request) {
+        authorizationService.assertCanManageEmployees();
+        return persistNewEmployee(request);
+    }
+
+    @Override
+    public EmployeeResponseDto provisionFromAuth(EmployeeRequestDto request) {
+        return persistNewEmployee(request);
+    }
+
+    private EmployeeResponseDto persistNewEmployee(EmployeeRequestDto request) {
         if (employeeRepository.existsByEmployeeCode(request.getEmployeeCode().trim())) {
             throw new DuplicateResourceException("Employee code already exists: " + request.getEmployeeCode());
         }
@@ -42,6 +62,7 @@ public class EmployeeServiceImpl implements EmployeeService {
     @Override
     @Transactional(readOnly = true)
     public List<EmployeeResponseDto> findAllActive() {
+        authorizationService.assertCanManageEmployees();
         return employeeRepository.findAllActive().stream()
                 .map(employeeDtoMapper::toResponseDto)
                 .collect(Collectors.toList());
@@ -50,6 +71,7 @@ public class EmployeeServiceImpl implements EmployeeService {
     @Override
     @Transactional(readOnly = true)
     public EmployeeResponseDto findById(Long id) {
+        authorizationService.assertCanViewEmployee(id);
         Employee employee = employeeRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Employee not found with id: " + id));
         return employeeDtoMapper.toResponseDto(employee);
@@ -57,6 +79,7 @@ public class EmployeeServiceImpl implements EmployeeService {
 
     @Override
     public EmployeeResponseDto update(Long id, EmployeeRequestDto request) {
+        authorizationService.assertCanManageEmployees();
         Employee existing = employeeRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Employee not found with id: " + id));
         String newCode = request.getEmployeeCode().trim();
@@ -71,6 +94,7 @@ public class EmployeeServiceImpl implements EmployeeService {
 
     @Override
     public void softDelete(Long id) {
+        authorizationService.assertCanManageEmployees();
         Employee existing = employeeRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Employee not found with id: " + id));
         if (!existing.isActive()) {

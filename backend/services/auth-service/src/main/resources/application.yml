@@ -1,0 +1,53 @@
+server:
+  port: 8082
+
+spring:
+  application:
+    name: auth-service
+  datasource:
+    url: ${AUTH_DB_URL:jdbc:mysql://localhost:3306/auth_service_db?createDatabaseIfNotExist=true&useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC}
+    username: ${AUTH_DB_USERNAME:root}
+    password: ${AUTH_DB_PASSWORD:}
+    driver-class-name: com.mysql.cj.jdbc.Driver
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: false
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MySQLDialect
+        jdbc:
+          time_zone: UTC
+
+jwt:
+  secret: ${JWT_SECRET:dev-jwt-secret-must-be-at-least-32-bytes-long!!}
+  issuer: ${JWT_ISSUER:petrol-pump-auth}
+  access-token-minutes: ${JWT_ACCESS_MINUTES:15}
+  refresh-token-days: ${JWT_REFRESH_DAYS:7}
+
+auth:
+  cookie:
+    access-token-name: access_token
+    refresh-token-name: refresh_token
+    path: /
+    http-only: true
+    secure: ${AUTH_COOKIE_SECURE:false}
+    same-site: Strict
+  admin:
+    bootstrap:
+      enabled: ${AUTH_ADMIN_BOOTSTRAP_ENABLED:true}
+      employee-id: ADMIN001
+      name: System Administrator
+      email: admin@gmail.com
+      password: ${AUTH_ADMIN_BOOTSTRAP_PASSWORD:admin123}
+      phone-number: "0000000000"
+
+integration:
+  hr:
+    base-url: ${HR_SERVICE_URL:http://localhost:3003}
+    internal-token: ${GATEWAY_INTERNAL_TOKEN:dev-gateway-internal-token-change-in-production}
+
+logging:
+  level:
+    root: INFO
+    com.assignment.auth_service: INFO

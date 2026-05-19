@@ -10,6 +10,7 @@ import com.assignment.hr_service.common.exception.BusinessRuleViolationException
 import com.assignment.hr_service.common.exception.ResourceNotFoundException;
 import com.assignment.hr_service.employee.domain.model.Employee;
 import com.assignment.hr_service.employee.domain.repository.EmployeeRepository;
+import com.assignment.hr_service.security.AuthorizationService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -25,10 +26,17 @@ public class AttendanceServiceImpl implements AttendanceService {
     private final AttendanceRepository attendanceRepository;
     private final EmployeeRepository employeeRepository;
     private final AttendanceDtoMapper attendanceDtoMapper;
+    private final AuthorizationService authorizationService;
 
     public AttendanceServiceImpl(
             AttendanceRepository attendanceRepository,
             EmployeeRepository employeeRepository,
+            AttendanceDtoMapper attendanceDtoMapper,
+            AuthorizationService authorizationService) {
+        this.attendanceRepository = attendanceRepository;
+        this.employeeRepository = employeeRepository;
+        this.attendanceDtoMapper = attendanceDtoMapper;
+        this.authorizationService = authorizationService;
             AttendanceDtoMapper attendanceDtoMapper) {
         this.attendanceRepository = attendanceRepository;
         this.employeeRepository = employeeRepository;
@@ -37,6 +45,7 @@ public class AttendanceServiceImpl implements AttendanceService {
 
     @Override
     public AttendanceResponseDto takeAttendance(AttendanceRequestDto request) {
+        authorizationService.assertCanMarkAttendance(request.getEmployeeId());
         Employee employee = employeeRepository.findById(request.getEmployeeId())
                 .orElseThrow(() -> new ResourceNotFoundException("Employee not found with id: " + request.getEmployeeId()));
         if (!employee.isActive()) {
@@ -81,6 +90,7 @@ public class AttendanceServiceImpl implements AttendanceService {
     @Override
     @Transactional(readOnly = true)
     public List<AttendanceResponseDto> findByDate(LocalDate date) {
+        authorizationService.assertAdminForAttendanceAggregates();
         return attendanceRepository.findByAttendanceDate(date).stream()
                 .map(attendanceDtoMapper::toResponseDto)
                 .collect(Collectors.toList());
@@ -89,6 +99,7 @@ public class AttendanceServiceImpl implements AttendanceService {
     @Override
     @Transactional(readOnly = true)
     public List<AttendanceResponseDto> findAll() {
+        authorizationService.assertAdminForAttendanceAggregates();
         return attendanceRepository.findAllOrderByDateDesc().stream()
                 .map(attendanceDtoMapper::toResponseDto)
                 .collect(Collectors.toList());
@@ -97,6 +108,7 @@ public class AttendanceServiceImpl implements AttendanceService {
     @Override
     @Transactional(readOnly = true)
     public List<AttendanceResponseDto> findByEmployeeId(Long employeeId) {
+        authorizationService.assertCanQueryAttendanceForEmployee(employeeId);
         if (!employeeRepository.findById(employeeId).isPresent()) {
             throw new ResourceNotFoundException("Employee not found with id: " + employeeId);
         }

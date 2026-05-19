@@ -1,0 +1,14 @@
+gateway:
+  rate-limit:
+    enabled: false
+  security:
+    internal-token: test-internal-token
+
+jwt:
+  secret: test-gateway-secret-must-be-32-bytes-minimum!!
+  issuer: petrol-pump-auth
+
+spring:
+  autoconfigure:
+    exclude:
+      - org.springframework.boot.autoconfigure.data.redis.RedisReactiveAutoConfiguration
