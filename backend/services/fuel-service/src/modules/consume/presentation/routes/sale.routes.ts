@@ -4,11 +4,15 @@ import { RecordSaleUseCase } from '../../application/use-cases/record-sale.use-c
 import { ListSalesUseCase } from '../../application/use-cases/list-sales.use-case.js';
 import { GetSaleDetailsUseCase } from '../../application/use-cases/get-sale-details.use-case.js';
 import { MongooseSaleRepository } from '../../infrastructure/persistence/mongoose/mongoose-sale.repository.js';
+import { KafkaMessageBroker } from '../../infrastructure/messaging/kafka-message.broker.js';
 
 const router = Router();
 
 const saleRepository = new MongooseSaleRepository();
-const recordSaleUseCase = new RecordSaleUseCase(saleRepository);
+const messageBroker = new KafkaMessageBroker();
+messageBroker.connect(); // Starts connecting asynchronously
+
+const recordSaleUseCase = new RecordSaleUseCase(saleRepository, messageBroker);
 const listSalesUseCase = new ListSalesUseCase(saleRepository);
 const getSaleDetailsUseCase = new GetSaleDetailsUseCase(saleRepository);
 

@@ -6,6 +6,8 @@ import org.springframework.test.context.ActiveProfiles;
 
 @SpringBootTest
 @ActiveProfiles("gateway-test")
+
+@SpringBootTest
 class PetrolPumpApiGatewayApplicationTests {
 
 	@Test

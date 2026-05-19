@@ -3,6 +3,7 @@ server:
   error:
     include-message: always
 
+# Downstream base URLs (override per environment)
 gateway:
   downstream:
     fuel: http://localhost:3001
@@ -46,6 +47,9 @@ spring:
           uri: ${gateway.downstream.hr}
           predicates:
             - Path=/attendance/**
+  cloud:
+    gateway:
+      routes:
         - id: fuel-service
           uri: ${gateway.downstream.fuel}
           predicates:
@@ -54,11 +58,17 @@ spring:
           uri: ${gateway.downstream.inventory}
           predicates:
             - Path=/inventory/**
+        - id: hr-service
+          uri: ${gateway.downstream.hr}
+          predicates:
+            - Path=/hr/**
       globalcors:
         add-to-simple-url-handler-mapping: true
         cors-configurations:
           '[/**]':
             allowed-origin-patterns: ${gateway.cors.allowed-origins}
+            allowed-origin-patterns:
+              - "*"
             allowed-methods:
               - GET
               - POST
@@ -78,6 +88,13 @@ management:
   endpoint:
     health:
       show-details: when_authorized
+        include: health,info,gateway
+  endpoint:
+    health:
+      show-details: when_authorized
+  health:
+    defaults:
+      enabled: true
 
 logging:
   level:

@@ -37,6 +37,10 @@ public class AttendanceServiceImpl implements AttendanceService {
         this.employeeRepository = employeeRepository;
         this.attendanceDtoMapper = attendanceDtoMapper;
         this.authorizationService = authorizationService;
+            AttendanceDtoMapper attendanceDtoMapper) {
+        this.attendanceRepository = attendanceRepository;
+        this.employeeRepository = employeeRepository;
+        this.attendanceDtoMapper = attendanceDtoMapper;
     }
 
     @Override

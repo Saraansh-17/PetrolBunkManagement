@@ -33,6 +33,10 @@ public class EmployeeServiceImpl implements EmployeeService {
         this.employeeRepository = employeeRepository;
         this.employeeDtoMapper = employeeDtoMapper;
         this.authorizationService = authorizationService;
+
+    public EmployeeServiceImpl(EmployeeRepository employeeRepository, EmployeeDtoMapper employeeDtoMapper) {
+        this.employeeRepository = employeeRepository;
+        this.employeeDtoMapper = employeeDtoMapper;
     }
 
     @Override
