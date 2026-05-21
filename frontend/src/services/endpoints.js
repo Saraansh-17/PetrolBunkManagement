@@ -7,25 +7,25 @@ export const ENDPOINTS = {
   },
   FUEL: {
     // Fuel Consume
-    RECORD_SALE: "/fuel/sale",
-    GET_ALL_SALES: "/fuel/sales",
-    GET_SALE_BY_ID: (id) => `/fuel/sales/${id}`,
+    RECORD_SALE: "/api/v1/fuel/sale",
+    GET_ALL_SALES: "/api/v1/fuel/sales",
+    GET_SALE_BY_ID: (id) => `api/v1/fuel/sales/${id}`,
 
     // Fuel Purchases
-    RECORD_PURCHASE: "/fuel/purchase/create",
-    GET_ALL_PURCHASES: "/fuel/purchase/purchases",
-    GET_PURCHASE_BY_ID: (id) => `/fuel/purchases/${id}`,
+    RECORD_PURCHASE: "api/v1/fuel/purchase/create",
+    GET_ALL_PURCHASES: "api/v1/fuel/purchase/purchases",
+    GET_PURCHASE_BY_ID: (id) => `api/v1/fuel/purchases/${id}`,
   },
 
   INVENTORY: {
-    GET_STOCK: "/inventory/stock",
-    RESERVE_STOCK: "/inventory/reserve",
+    GET_STOCK: "api/v1/inventory/stock",
+    RESERVE_STOCK: "api/v1/inventory/reserve",
   },
 
   EMPLOYEES: {
-    GET_ALL_EMPLOYEES: "/employees",
-    GET_EMPLOYEE_BY_ID: (id) => `/employees/${id}`,
-    CREATE_EMPLOYEE: "/employees",
+    GET_ALL_EMPLOYEES: "api/v1/employees",
+    GET_EMPLOYEE_BY_ID: (id) => `api/v1/employees/${id}`,
+    CREATE_EMPLOYEE: "api/v1/employees",
   },
 
   ATTENDANCE: {
