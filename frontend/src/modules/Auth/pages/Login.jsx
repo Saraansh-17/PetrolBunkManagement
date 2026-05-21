@@ -18,7 +18,7 @@ const Login = () => {
 
 
   const [formData, setFormData] = useState({
-    employeeId: "",
+    email: "",
     password: "",
   });
 
@@ -53,6 +53,7 @@ const Login = () => {
       setLoading(true);
 
       // Login Request
+      console.log(formData);
       await loginUser(formData);
 
       // Fetch Current User
@@ -92,8 +93,8 @@ const Login = () => {
         {/* Employee ID */}
         <input
           type="text"
-          name="employeeId"
-          placeholder="Employee ID"
+          name="email"
+          placeholder="email id"
           value={formData.employeeId}
           onChange={handleChange}
           className="w-full border p-3 rounded-lg"
