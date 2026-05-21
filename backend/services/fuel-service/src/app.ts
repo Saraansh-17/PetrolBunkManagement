@@ -1,6 +1,5 @@
 import express from "express";
 import cors from "cors";
-import cors from "cors"
 import saleRoutes from "./modules/consume/presentation/routes/sale.routes.js";
 import purchaseRoutes from "./modules/purchase/presentation/routes/purchase.routes.js";
 

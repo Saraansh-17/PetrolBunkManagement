@@ -12,9 +12,6 @@ public interface EmployeeJpaRepository extends JpaRepository<EmployeeEntity, Lon
 
     Optional<EmployeeEntity> findByEmployeeCodeIgnoreCase(String employeeCode);
 
-
-public interface EmployeeJpaRepository extends JpaRepository<EmployeeEntity, Long> {
-
     List<EmployeeEntity> findByActiveTrue();
 
     boolean existsByEmployeeCode(String employeeCode);

@@ -31,8 +31,7 @@ spring:
         - id: hr-service
           uri: ${gateway.downstream.hr}
           predicates:
-            - Path=/hr/**
-            - Path=/attendance/**
+            - Path=/hr/**,/attendance/**
 
         # =========================
         # FUEL SERVICE
@@ -41,8 +40,6 @@ spring:
           uri: ${gateway.downstream.fuel}
           predicates:
             - Path=/api/v1/fuel/**
-          filters:
-            - StripPrefix=3
 
         # =========================
         # INVENTORY SERVICE
@@ -51,8 +48,6 @@ spring:
           uri: ${gateway.downstream.inventory}
           predicates:
             - Path=/api/v1/inventory/**
-          filters:
-            - StripPrefix=3
 
       globalcors:
         add-to-simple-url-handler-mapping: true

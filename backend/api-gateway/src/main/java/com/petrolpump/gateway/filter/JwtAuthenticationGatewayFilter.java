@@ -119,10 +119,10 @@ public class JwtAuthenticationGatewayFilter implements GlobalFilter, Ordered {
 
     private static boolean requiresJwt(String path) {
         return path.startsWith("/auth/employees")
-                || path.startsWith("/hr/employees")
+                || path.startsWith("/hr/")
                 || path.startsWith("/attendance")
-                || path.startsWith("/fuel")
-                || path.startsWith("/inventory");
+                || path.startsWith("/api/v1/fuel")
+                || path.startsWith("/api/v1/inventory");
     }
 
     @Override
